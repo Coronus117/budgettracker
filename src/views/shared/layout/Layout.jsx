@@ -2,10 +2,10 @@ import React from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 
-function Layout({ children }) {
+function Layout({ clickAddHandler, children }) {
   return (
     <div>
-      <Navigation />
+      <Navigation clickAddHandler={clickAddHandler} />
       {children}
       <Footer />
     </div>

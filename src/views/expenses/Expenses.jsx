@@ -65,16 +65,17 @@ function Expenses() {
 
   return (
     <div>
-      <Layout>
+      <Layout clickAddHandler={() => clickOpenExpenseModalHandler("add")}>
         {expenseIsValidating && <div>LOADING LOADING LOADING</div>}
 
-        <Box sx={{ p: 4 }}>
+        <Box>
           <Stack spacing={2}>
             {expenseData &&
               !expenseError &&
               formattedExpenseData &&
-              formattedExpenseData.map((expense) => (
+              formattedExpenseData.map((expense, i) => (
                 <Expense
+                  key={i}
                   expenseData={expense}
                   editClickHandler={() => {
                     setSelectedExpenseData(expense);
@@ -82,12 +83,6 @@ function Expenses() {
                   }}
                 />
               ))}
-            <IconButton
-              aria-label="delete"
-              onClick={() => clickOpenExpenseModalHandler("add")}
-            >
-              <AddCircleOutlineIcon />
-            </IconButton>
           </Stack>
         </Box>
 

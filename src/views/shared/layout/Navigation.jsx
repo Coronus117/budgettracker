@@ -4,14 +4,17 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { Box } from "@mui/material";
 
+import IconButton from "@mui/material/IconButton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+
 const buttons = [
   { label: "Budget", to: "/" },
   { label: "Expenses", to: "/expenses" },
 ];
 
-function Navigation() {
+function Navigation({ clickAddHandler }) {
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ py: 2 }}>
       <Stack spacing={2} direction="row">
         {buttons.map((b) => {
           return (
@@ -22,6 +25,13 @@ function Navigation() {
             </nav>
           );
         })}
+        <IconButton
+          aria-label="delete"
+          onClick={clickAddHandler}
+          sx={{ display: "flex", justifyContent: "end" }}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
       </Stack>
     </Box>
   );

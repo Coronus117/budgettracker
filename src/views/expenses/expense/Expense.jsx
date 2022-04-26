@@ -13,31 +13,48 @@ function Expense({ expenseData, editClickHandler }) {
     <Paper elevation={3}>
       <Box padding={1}>
         <Grid container>
-          <Grid item xs={12} sm={4} md={3} display="flex" alignItems="center">
-            <Typography variant="h5" component="h2">
+          <Grid item xs={10} sm={3} md={3} display="flex" alignItems="center">
+            <Typography
+              variant="h5"
+              component="h2"
+              overflow="hidden"
+              textOverflow={"ellipsis"}
+            >
               {title}
             </Typography>
           </Grid>
-
-          <Grid item xs={12} sm={8} md={9}>
-            <Typography variant="subtitle1" component="subtitle1">
-              <Grid container>
-                <Grid item xs={3} display="flex" alignItems="center">
-                  {`$${cost}`}
-                </Grid>
-                <Grid item xs={3} display="flex" alignItems="center">
-                  {category}
-                </Grid>
-                <Grid item xs={3} display="flex" alignItems="center">
-                  {date}
-                </Grid>
-                <Grid item xs={3} display="flex" justifyContent="end">
-                  <IconButton aria-label="delete" onClick={editClickHandler}>
-                    <EditIcon />
-                  </IconButton>
-                </Grid>
+          <Grid
+            variant="h5"
+            component="h2"
+            item
+            xs={2}
+            sm={2}
+            md={2}
+            display="flex"
+            alignItems="center"
+            sx={{
+              justifyContent: { xs: "end", sm: "start" },
+              paddingRight: { xs: 1, sm: 0 },
+            }}
+          >
+            {`$${cost}`}
+          </Grid>
+          <Grid item xs={12} sm={7} md={7}>
+            {/* <Typography> */}
+            <Grid container>
+              <Grid item xs={4} display="flex" alignItems="center">
+                {category}
               </Grid>
-            </Typography>
+              <Grid item xs={4} display="flex" alignItems="center">
+                {date}
+              </Grid>
+              <Grid item xs={4} display="flex" justifyContent="end">
+                <IconButton aria-label="delete" onClick={editClickHandler}>
+                  <EditIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
+            {/* </Typography> */}
           </Grid>
         </Grid>
       </Box>

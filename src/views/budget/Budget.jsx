@@ -6,12 +6,8 @@ import Layout from "views/shared/layout";
 import Category from "./category/Category";
 import ModalAddEditCategory from "./addEditCategory/ModalAddEditCategory";
 
-import { Box } from "@mui/material";
-import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-
-import IconButton from "@mui/material/IconButton";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Stack } from "@mui/material";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -21,7 +17,9 @@ function Budget() {
     type: "add",
   });
   const [formattedCategoryData, setFormattedCategoryData] = useState(null);
+  const [finalCategoryData, setFinalCategoryData] = useState(null);
   const [selectedCategoryData, setSelectedCategoryData] = useState(null);
+  const [formattedExpenseData, setFormattedExpenseData] = useState(null);
 
   const {
     data: catData,
@@ -44,10 +42,13 @@ function Budget() {
     setFormattedCategoryData(transformedCatData);
   }, [catData]);
 
-  const [formattedExpenseData, setFormattedExpenseData] = useState(null);
-
   useEffect(() => {
-    if (formattedCategoryData && formattedExpenseData) {
+    if (
+      formattedCategoryData &&
+      formattedCategoryData.length > 0 &&
+      formattedExpenseData &&
+      formattedExpenseData.length > 0
+    ) {
       const updatedCategoryData = formattedCategoryData;
       updatedCategoryData.map((cat) => {
         return formattedExpenseData.map((exp) => {
@@ -58,7 +59,7 @@ function Budget() {
           return cat;
         });
       });
-      setFormattedCategoryData(updatedCategoryData);
+      setFinalCategoryData(updatedCategoryData);
     }
   }, [formattedCategoryData, formattedExpenseData]);
 
@@ -86,31 +87,27 @@ function Budget() {
 
   return (
     <div>
-      <Layout>
+      <Layout clickAddHandler={() => clickOpenCatModalHandler("add")}>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
-        {catData && !catError && formattedCategoryData && (
-          <Grid container sx={{ p: 4 }} spacing={4}>
-            {formattedCategoryData.map((cat, i) => (
-              <Grid item key={i} xs={12} sm={6} md={4}>
-                <Category
-                  title={cat.name}
-                  max={cat.maxBudget}
-                  curr={cat.currentlyUsedBudget}
-                  editClickHandler={() => {
-                    setSelectedCategoryData(cat);
-                    clickOpenCatModalHandler("edit");
-                  }}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-        <IconButton
-          aria-label="delete"
-          onClick={() => clickOpenCatModalHandler("add")}
-        >
-          <AddCircleOutlineIcon />
-        </IconButton>
+        <Stack gap={0}>
+          {catData && !catError && finalCategoryData && (
+            <Grid container spacing={2}>
+              {finalCategoryData.map((cat, i) => (
+                <Grid item key={i} xs={12} sm={6} md={4}>
+                  <Category
+                    title={cat.name}
+                    max={cat.maxBudget}
+                    curr={cat.currentlyUsedBudget}
+                    editClickHandler={() => {
+                      setSelectedCategoryData(cat);
+                      clickOpenCatModalHandler("edit");
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Stack>
         {catError && <div>ERROR ERROR ERROR</div>}
       </Layout>
       <ModalAddEditCategory

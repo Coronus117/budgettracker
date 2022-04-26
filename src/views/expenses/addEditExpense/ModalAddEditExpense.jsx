@@ -247,8 +247,10 @@ function ModalAddEditExpense({
                         onChange={handleChange}
                         error={touched.category && Boolean(errors.category)}
                       >
-                        {categories.map((cat) => (
-                          <MenuItem value={cat}>{cat}</MenuItem>
+                        {categories.map((cat, i) => (
+                          <MenuItem key={i} value={cat}>
+                            {cat}
+                          </MenuItem>
                         ))}
                       </Select>
                       <FormHelperText>

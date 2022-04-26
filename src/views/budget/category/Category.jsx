@@ -43,9 +43,7 @@ function Category({ title, max, curr, editClickHandler }) {
             />
           </Grid>
           <Grid item paddingLeft={1}>
-            <Typography variant="subtitle2" component="subtitle2">
-              {`$${curr} / $${max}`}
-            </Typography>
+            <Typography>{`$${curr} / $${max}`}</Typography>
           </Grid>
         </Grid>
       </Box>
