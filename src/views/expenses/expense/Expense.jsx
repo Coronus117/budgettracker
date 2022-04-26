@@ -1,16 +1,15 @@
 import React from "react";
 
 function Expense({ expenseData, editClickHandler }) {
-  const { expenseTitle, expenseCost, expenseCategory, expenseDate } =
-    expenseData;
+  const { title, cost, category, date } = expenseData;
   return (
     <div className="flex flex-row justify-between border-2 p-3 rounded-lg">
       <div className="flex flex-col gap-1 w-full">
-        <div>{expenseTitle}</div>
+        <div>{title}</div>
         <div className="flex flex-row gap-6">
-          <div>Cost: {expenseCost}</div>
-          <div>Category: {expenseCategory}</div>
-          <div>Date: {expenseDate}</div>
+          <div>Cost: {cost}</div>
+          <div>Category: {category}</div>
+          <div>Date: {date}</div>
         </div>
       </div>
       <button

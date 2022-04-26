@@ -1,29 +1,35 @@
 import React, { useState } from "react";
-// import { Formik, Form } from "formik";
-// import * as Yup from "yup";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
 import { httpClient } from "helpers";
 
-// const expenseSchema = Yup.object().shape({
-//   expenseTitle: Yup.string()
-//     .max(250, "Sorry that name is too long")
-//     .required("This field is required"),
-//   expenseCost: Yup.number()
-//     .min(0, "Enter a valid number")
-//     .required("This field is required"),
-//   expenseCategory: Yup.string()
-//     .max(250, "Sorry that name is too long")
-//     .required("This field is required"),
-//   expenseDate: Yup.string()
-//     .max(250, "Sorry that name is too long")
-//     .required("This field is required"),
-// });
+const expenseSchema = Yup.object().shape({
+  title: Yup.string()
+    .max(250, "Sorry that name is too long")
+    .required("This field is required"),
+  cost: Yup.number()
+    .min(0, "Enter a valid number")
+    .required("This field is required"),
+  category: Yup.string()
+    .max(250, "Sorry that name is too long")
+    .required("This field is required"),
+  date: Yup.string()
+    .max(250, "Sorry that name is too long")
+    .required("This field is required"),
+});
 
 const initialValues = Object.freeze({
-  expenseTitle: "",
-  expenseCost: 0,
-  expenseCategory: "",
-  expenseDate: new Date().toLocaleDateString(),
+  title: "",
+  cost: 0,
+  category: "",
+  date: new Date().toLocaleDateString(),
 });
 
 function ModalAddEditExpense({
@@ -132,17 +138,133 @@ function ModalAddEditExpense({
   const getInitialValues = (modalType) => {
     const initVals = { ...initialValues };
     if (modalType === "edit") {
-      initVals.expenseTitle = editExpenseData.expenseTitle;
-      initVals.expenseCost = editExpenseData.expenseCost;
-      initVals.expenseCategory = editExpenseData.expenseCategory;
-      initVals.expenseDate = editExpenseData.expenseDate;
+      initVals.title = editExpenseData.title;
+      initVals.cost = editExpenseData.cost;
+      initVals.category = editExpenseData.category;
+      initVals.date = editExpenseData.date;
     }
 
     return initVals;
   };
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
-    <div>Modal</div>
+    <Modal
+      open={expenseModalOpen}
+      onClose={requestClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          component="h2"
+          sx={{ mb: 2 }}
+        >
+          {type === "add" ? "Add Expense" : "Edit Expense"}
+        </Typography>
+        <Formik
+          initialValues={getInitialValues(type)}
+          validationSchema={expenseSchema}
+          onSubmit={handleSubmit}
+        >
+          {({
+            isValid,
+            isSubmitting,
+            dirty,
+            setErrors,
+            values,
+            touched,
+            errors,
+            handleChange,
+          }) => (
+            <Form className="modal-content">
+              <Grid
+                container
+                alignItems="center"
+                justify="center"
+                direction="column"
+                gap={4}
+                padding={4}
+              >
+                <Grid item>
+                  <TextField
+                    required={true}
+                    id="title-input"
+                    name="title"
+                    label="Title"
+                    type="text"
+                    value={values.title}
+                    onChange={handleChange}
+                    error={touched.title && Boolean(errors.title)}
+                    helperText={touched.title && errors.title}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    required={true}
+                    id="cost-input"
+                    name="cost"
+                    label="Cost"
+                    type="number"
+                    value={values.cost}
+                    onChange={handleChange}
+                    error={touched.cost && Boolean(errors.cost)}
+                    helperText={touched.cost && errors.cost}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    required={true}
+                    id="category-input"
+                    name="category"
+                    label="category"
+                    type="text"
+                    value={values.category}
+                    onChange={handleChange}
+                    error={touched.category && Boolean(errors.category)}
+                    helperText={touched.category && errors.category}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    required={true}
+                    id="date-input"
+                    name="date"
+                    label="date"
+                    type="text"
+                    value={values.date}
+                    onChange={handleChange}
+                    error={touched.date && Boolean(errors.date)}
+                    helperText={touched.date && errors.date}
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Modal>
     // <Modal
     //   className="modal-content"
     //   open={expenseModalOpen}
@@ -175,17 +297,17 @@ function ModalAddEditExpense({
     //               <div className="max-w-md px-6 mx-auto">
     //                 <div className="py-12">
     //                   <div className="space-y-6">
-    //                     <InputField name="expenseTitle" label="Expense Title" />
+    //                     <InputField name="title" label="Expense Title" />
     //                     <div className="flex w-1/2">
     //                       <InputField
     //                         type="number"
-    //                         name="expenseCost"
+    //                         name="cost"
     //                         label="Expense Cost"
     //                       />
     //                     </div>
     //                     <InputField
     //                       type="select"
-    //                       name="expenseCategory"
+    //                       name="category"
     //                       label="Expense Category"
     //                       options={categories.map((cat) => ({
     //                         value: cat,

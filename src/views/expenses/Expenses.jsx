@@ -99,7 +99,7 @@ function Expenses() {
         type={expenseModalOpen.type}
         editExpenseData={selectedExpenseData}
         mutate={expenseMutate}
-        categories={formattedCategoryData?.map((c) => c.categoryName)}
+        categories={formattedCategoryData?.map((c) => c.name)}
       />
     </div>
   );
