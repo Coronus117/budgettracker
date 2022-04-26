@@ -8,6 +8,10 @@ import ModalAddEditCategory from "./addEditCategory/ModalAddEditCategory";
 
 import { Box } from "@mui/material";
 import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+
+import IconButton from "@mui/material/IconButton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -43,20 +47,19 @@ function Budget() {
   const [formattedExpenseData, setFormattedExpenseData] = useState(null);
 
   useEffect(() => {
-    const updatedCategoryData = formattedCategoryData;
-    if (updatedCategoryData && formattedExpenseData) {
+    if (formattedCategoryData && formattedExpenseData) {
+      const updatedCategoryData = formattedCategoryData;
       updatedCategoryData.map((cat) => {
         return formattedExpenseData.map((exp) => {
           if (exp.category === cat.name) {
-            if (!cat.currentlyUsed) cat.currentlyUsed = 0;
-            cat.currentlyUsed += exp.cost;
+            if (!cat.currentlyUsedBudget) cat.currentlyUsedBudget = 0;
+            cat.currentlyUsedBudget += exp.cost;
           }
           return cat;
         });
       });
+      setFormattedCategoryData(updatedCategoryData);
     }
-    console.log("updatedCategoryData", updatedCategoryData);
-    // setFormattedCategoryData(updatedCategoryData);
   }, [formattedCategoryData, formattedExpenseData]);
 
   const {
@@ -86,30 +89,28 @@ function Budget() {
       <Layout>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
         {catData && !catError && formattedCategoryData && (
-          <Box sx={{ p: 4 }}>
-            <Stack spacing={2}>
-              {formattedCategoryData.map((cat, i) => (
+          <Grid container sx={{ p: 4 }} spacing={4}>
+            {formattedCategoryData.map((cat, i) => (
+              <Grid item key={i} xs={12} sm={6} md={4}>
                 <Category
-                  key={i}
                   title={cat.name}
                   max={cat.maxBudget}
-                  curr={cat?.currentlyUsed || "CALCULATE THIS"}
+                  curr={cat.currentlyUsedBudget}
                   editClickHandler={() => {
                     setSelectedCategoryData(cat);
                     clickOpenCatModalHandler("edit");
                   }}
                 />
-              ))}
-            </Stack>
-          </Box>
+              </Grid>
+            ))}
+          </Grid>
         )}
-        <button onClick={() => clickOpenCatModalHandler("add")}>
-          <Box className="category-add">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 368C269.3 368 280 357.3 280 344V280H344C357.3 280 368 269.3 368 256C368 242.7 357.3 232 344 232H280V168C280 154.7 269.3 144 256 144C242.7 144 232 154.7 232 168V232H168C154.7 232 144 242.7 144 256C144 269.3 154.7 280 168 280H232V344C232 357.3 242.7 368 256 368z" />
-            </svg>
-          </Box>
-        </button>
+        <IconButton
+          aria-label="delete"
+          onClick={() => clickOpenCatModalHandler("add")}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
         {catError && <div>ERROR ERROR ERROR</div>}
       </Layout>
       <ModalAddEditCategory

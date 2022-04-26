@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 import { httpClient } from "helpers";
 
@@ -22,6 +23,7 @@ const categorySchema = Yup.object().shape({
 const initialValues = Object.freeze({
   name: "",
   maxBudget: 0,
+  currentlyUsedBudget: 0,
 });
 
 function ModalAddEditCategory({
@@ -62,7 +64,7 @@ function ModalAddEditCategory({
         });
         setTimeout(() => {
           handleClose();
-        }, 4500);
+        }, 750);
       } else {
         throw Error("Category deletion failed.");
       }
@@ -102,7 +104,7 @@ function ModalAddEditCategory({
         });
         setTimeout(() => {
           handleClose();
-        }, 4500);
+        }, 750);
       } else {
         throw Error("Category creation failed.");
       }
@@ -214,15 +216,26 @@ function ModalAddEditCategory({
                     helperText={touched.maxBudget && errors.maxBudget}
                   />
                 </Grid>
+                <Stack spacing={2} direction="row" justifyContent="center">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
+                  {type === "edit" && (
+                    <Button
+                      type="button"
+                      onClick={() => clickDeleteHandler()}
+                      disabled={isSubmitting}
+                    >
+                      DELETE
+                    </Button>
+                  )}
+                </Stack>
               </Grid>
-              <Button
-                color="primary"
-                variant="contained"
-                fullWidth
-                type="submit"
-              >
-                Submit
-              </Button>
             </Form>
           )}
         </Formik>

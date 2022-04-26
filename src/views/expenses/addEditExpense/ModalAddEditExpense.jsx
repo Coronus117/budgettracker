@@ -7,8 +7,14 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import FormHelperText from "@mui/material/FormHelperText";
 
 import { httpClient } from "helpers";
+import { Stack } from "@mui/material";
 
 const expenseSchema = Yup.object().shape({
   title: Yup.string()
@@ -71,7 +77,7 @@ function ModalAddEditExpense({
         });
         setTimeout(() => {
           handleClose();
-        }, 4500);
+        }, 750);
       } else {
         throw Error("Expense deletion failed.");
       }
@@ -111,7 +117,7 @@ function ModalAddEditExpense({
         });
         setTimeout(() => {
           handleClose();
-        }, 4500);
+        }, 750);
       } else {
         throw Error("Expense creation failed.");
       }
@@ -226,17 +232,30 @@ function ModalAddEditExpense({
                   />
                 </Grid>
                 <Grid item>
-                  <TextField
-                    required={true}
-                    id="category-input"
-                    name="category"
-                    label="category"
-                    type="text"
-                    value={values.category}
-                    onChange={handleChange}
-                    error={touched.category && Boolean(errors.category)}
-                    helperText={touched.category && errors.category}
-                  />
+                  <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Category
+                      </InputLabel>
+                      <Select
+                        required={true}
+                        name="category"
+                        labelId="demo-simple-select-label"
+                        id="category-input"
+                        value={values.category}
+                        label="Category"
+                        onChange={handleChange}
+                        error={touched.category && Boolean(errors.category)}
+                      >
+                        {categories.map((cat) => (
+                          <MenuItem value={cat}>{cat}</MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {touched.category && errors.category}
+                      </FormHelperText>
+                    </FormControl>
+                  </Box>
                 </Grid>
                 <Grid item>
                   <TextField
@@ -251,15 +270,21 @@ function ModalAddEditExpense({
                     helperText={touched.date && errors.date}
                   />
                 </Grid>
+                <Stack direction="row" spacing={2} justifyContent="center">
+                  <Button color="primary" variant="contained" type="submit">
+                    Submit
+                  </Button>
+                  {type === "edit" && (
+                    <Button
+                      type="button"
+                      onClick={() => clickDeleteHandler()}
+                      color="primary"
+                    >
+                      DELETE
+                    </Button>
+                  )}
+                </Stack>
               </Grid>
-              <Button
-                color="primary"
-                variant="contained"
-                fullWidth
-                type="submit"
-              >
-                Submit
-              </Button>
             </Form>
           )}
         </Formik>
