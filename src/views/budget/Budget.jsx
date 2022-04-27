@@ -8,10 +8,18 @@ import ModalAddEditCategory from "./addEditCategory/ModalAddEditCategory";
 
 import Grid from "@mui/material/Grid";
 import { Stack } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function Budget() {
+  const initialDate = {
+    month: new Date().getMonth(),
+    year: new Date().getFullYear(),
+  };
+
   const [catModalOpen, setCatModalOpen] = useState({
     open: false,
     type: "add",
@@ -20,6 +28,7 @@ function Budget() {
   const [finalCategoryData, setFinalCategoryData] = useState(null);
   const [selectedCategoryData, setSelectedCategoryData] = useState(null);
   const [formattedExpenseData, setFormattedExpenseData] = useState(null);
+  const [currDate, setCurrDate] = useState(initialDate);
 
   const {
     data: catData,
@@ -85,11 +94,43 @@ function Budget() {
     setCatModalOpen({ open: true, type: type });
   };
 
+  const MonthName = () => {
+    const date = new Date(currDate.year, currDate.month, 1); // 2009-11-10
+    return date.toLocaleString("default", { month: "long" });
+  };
+
+  const clickDateHandler = (dir) => {
+    switch (dir) {
+      case "left":
+        setCurrDate({ ...currDate, month: (currDate.month - 1) % 12 });
+        break;
+      default:
+        setCurrDate({ ...currDate, month: (currDate.month + 1) % 12 });
+    }
+  };
+
   return (
     <div>
       <Layout clickAddHandler={() => clickOpenCatModalHandler("add")}>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
         <Stack gap={0}>
+          <Stack direction={"row"} display="flex" alignItems="center">
+            <IconButton
+              aria-label="delete"
+              onClick={() => clickDateHandler("left")}
+              sx={{ display: "flex", justifyContent: "end" }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            {MonthName()}
+            <IconButton
+              aria-label="delete"
+              onClick={() => clickDateHandler("right")}
+              sx={{ display: "flex", justifyContent: "end" }}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Stack>
           {catData && !catError && finalCategoryData && (
             <Grid container spacing={2}>
               {finalCategoryData.map((cat, i) => (
