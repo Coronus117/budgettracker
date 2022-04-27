@@ -13,6 +13,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import { DatePicker } from "@mui/x-date-pickers";
+import Alert from "@mui/material/Alert";
 
 import { httpClient } from "helpers";
 import { Stack } from "@mui/material";
@@ -79,7 +80,7 @@ function ModalAddEditExpense({
         });
         setTimeout(() => {
           handleClose();
-        }, 750);
+        }, 1000);
       } else {
         throw Error("Expense deletion failed.");
       }
@@ -119,7 +120,7 @@ function ModalAddEditExpense({
         });
         setTimeout(() => {
           handleClose();
-        }, 750);
+        }, 1000);
       } else {
         throw Error("Expense creation failed.");
       }
@@ -175,6 +176,13 @@ function ModalAddEditExpense({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
+        {state.isLoading && <Alert severity="warning">Sending Data</Alert>}
+        {!state.isLoading && state.isSuccess && (
+          <Alert severity="success">Success</Alert>
+        )}
+        {!state.isLoading && state.isError && (
+          <Alert severity="error">Error</Alert>
+        )}
         <Typography
           id="modal-modal-title"
           variant="h6"

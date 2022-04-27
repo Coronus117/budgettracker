@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
 
 import { httpClient } from "helpers";
 
@@ -64,7 +65,7 @@ function ModalAddEditCategory({
         });
         setTimeout(() => {
           handleClose();
-        }, 750);
+        }, 1000);
       } else {
         throw Error("Category deletion failed.");
       }
@@ -104,7 +105,7 @@ function ModalAddEditCategory({
         });
         setTimeout(() => {
           handleClose();
-        }, 750);
+        }, 1000);
       } else {
         throw Error("Category creation failed.");
       }
@@ -158,6 +159,13 @@ function ModalAddEditCategory({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
+        {state.isLoading && <Alert severity="warning">Sending Data</Alert>}
+        {!state.isLoading && state.isSuccess && (
+          <Alert severity="success">Success</Alert>
+        )}
+        {!state.isLoading && state.isError && (
+          <Alert severity="error">Error</Alert>
+        )}
         <Typography
           id="modal-modal-title"
           variant="h6"

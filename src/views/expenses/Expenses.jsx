@@ -11,9 +11,12 @@ import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
+import { useSelector } from "react-redux";
+
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function Expenses() {
+  const currDate = useSelector((state) => state.currDate);
   const [expenseModalOpen, setExpenseModalOpen] = useState({
     open: false,
     type: "add",
@@ -73,16 +76,20 @@ function Expenses() {
             {expenseData &&
               !expenseError &&
               formattedExpenseData &&
-              formattedExpenseData.map((expense, i) => (
-                <Expense
-                  key={i}
-                  expenseData={expense}
-                  editClickHandler={() => {
-                    setSelectedExpenseData(expense);
-                    clickOpenExpenseModalHandler("edit");
-                  }}
-                />
-              ))}
+              formattedExpenseData
+                .filter((data) => {
+                  return new Date(data.date).getMonth() === currDate.getMonth();
+                })
+                .map((expense, i) => (
+                  <Expense
+                    key={i}
+                    expenseData={expense}
+                    editClickHandler={() => {
+                      setSelectedExpenseData(expense);
+                      clickOpenExpenseModalHandler("edit");
+                    }}
+                  />
+                ))}
           </Stack>
         </Box>
 

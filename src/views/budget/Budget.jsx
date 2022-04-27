@@ -8,17 +8,13 @@ import ModalAddEditCategory from "./addEditCategory/ModalAddEditCategory";
 
 import Grid from "@mui/material/Grid";
 import { Stack } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+import { useSelector } from "react-redux";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function Budget() {
-  const initialDate = {
-    month: new Date().getMonth(),
-    year: new Date().getFullYear(),
-  };
+  const currDate = useSelector((state) => state.currDate);
 
   const [catModalOpen, setCatModalOpen] = useState({
     open: false,
@@ -28,7 +24,6 @@ function Budget() {
   const [finalCategoryData, setFinalCategoryData] = useState(null);
   const [selectedCategoryData, setSelectedCategoryData] = useState(null);
   const [formattedExpenseData, setFormattedExpenseData] = useState(null);
-  const [currDate, setCurrDate] = useState(initialDate);
 
   const {
     data: catData,
@@ -51,26 +46,33 @@ function Budget() {
     setFormattedCategoryData(transformedCatData);
   }, [catData]);
 
-  useEffect(() => {
+  const CalcUsedBudget = () => {
     if (
       formattedCategoryData &&
       formattedCategoryData.length > 0 &&
       formattedExpenseData &&
       formattedExpenseData.length > 0
     ) {
-      const updatedCategoryData = formattedCategoryData;
+      const updatedCategoryData = [...formattedCategoryData];
       updatedCategoryData.map((cat) => {
+        cat.currentlyUsedBudget = 0;
         return formattedExpenseData.map((exp) => {
           if (exp.category === cat.name) {
-            if (!cat.currentlyUsedBudget) cat.currentlyUsedBudget = 0;
-            cat.currentlyUsedBudget += exp.cost;
+            const expDate = new Date(exp.date);
+            if (expDate.getMonth() === currDate.getMonth()) {
+              cat.currentlyUsedBudget += exp.cost;
+            }
           }
           return cat;
         });
       });
       setFinalCategoryData(updatedCategoryData);
     }
-  }, [formattedCategoryData, formattedExpenseData]);
+  };
+
+  useEffect(() => {
+    CalcUsedBudget();
+  }, [formattedCategoryData, formattedExpenseData, currDate]);
 
   const {
     data: expenseData,
@@ -94,43 +96,11 @@ function Budget() {
     setCatModalOpen({ open: true, type: type });
   };
 
-  const MonthName = () => {
-    const date = new Date(currDate.year, currDate.month, 1); // 2009-11-10
-    return date.toLocaleString("default", { month: "long" });
-  };
-
-  const clickDateHandler = (dir) => {
-    switch (dir) {
-      case "left":
-        setCurrDate({ ...currDate, month: (currDate.month - 1) % 12 });
-        break;
-      default:
-        setCurrDate({ ...currDate, month: (currDate.month + 1) % 12 });
-    }
-  };
-
   return (
     <div>
       <Layout clickAddHandler={() => clickOpenCatModalHandler("add")}>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
-        <Stack gap={0}>
-          <Stack direction={"row"} display="flex" alignItems="center">
-            <IconButton
-              aria-label="delete"
-              onClick={() => clickDateHandler("left")}
-              sx={{ display: "flex", justifyContent: "end" }}
-            >
-              <ChevronLeftIcon />
-            </IconButton>
-            {MonthName()}
-            <IconButton
-              aria-label="delete"
-              onClick={() => clickDateHandler("right")}
-              sx={{ display: "flex", justifyContent: "end" }}
-            >
-              <ChevronRightIcon />
-            </IconButton>
-          </Stack>
+        <Stack gap={2}>
           {catData && !catError && finalCategoryData && (
             <Grid container spacing={2}>
               {finalCategoryData.map((cat, i) => (
