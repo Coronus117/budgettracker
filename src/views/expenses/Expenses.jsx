@@ -80,6 +80,7 @@ function Expenses() {
                 .filter((data) => {
                   return new Date(data.date).getMonth() === currDate.getMonth();
                 })
+                .sort((obj1, obj2) => new Date(obj2.date) - new Date(obj1.date))
                 .map((expense, i) => (
                   <Expense
                     key={i}

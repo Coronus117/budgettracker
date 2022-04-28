@@ -37,7 +37,7 @@ function Navigation({ clickAddHandler }) {
   };
 
   return (
-    <Box sx={{ py: 2 }} display="flex" justifyContent="space-between">
+    <Box display="flex" justifyContent="space-between" paddingY={2}>
       <Grid container>
         <Grid item xs={6} sm={4}>
           <Stack spacing={2} direction="row" display="flex" alignItems="center">

@@ -5,6 +5,7 @@ import { httpBasePath } from "helpers";
 import Layout from "views/shared/layout";
 import Category from "./category/Category";
 import ModalAddEditCategory from "./addEditCategory/ModalAddEditCategory";
+import Summary from "./summary/Summary";
 
 import Grid from "@mui/material/Grid";
 import { Stack } from "@mui/material";
@@ -24,6 +25,10 @@ function Budget() {
   const [finalCategoryData, setFinalCategoryData] = useState(null);
   const [selectedCategoryData, setSelectedCategoryData] = useState(null);
   const [formattedExpenseData, setFormattedExpenseData] = useState(null);
+  const [summary, setSummary] = useState({
+    totalBudget: 0,
+    totalUsedBudget: 0,
+  });
 
   const {
     data: catData,
@@ -53,8 +58,11 @@ function Budget() {
       formattedExpenseData &&
       formattedExpenseData.length > 0
     ) {
+      let totalBudget = 0;
+      let totalUsedBudget = 0;
       const updatedCategoryData = [...formattedCategoryData];
       updatedCategoryData.map((cat) => {
+        totalBudget += cat.maxBudget;
         cat.currentlyUsedBudget = 0;
         return formattedExpenseData.map((exp) => {
           if (exp.category === cat.name) {
@@ -65,6 +73,18 @@ function Budget() {
           }
           return cat;
         });
+      });
+
+      formattedExpenseData.map((exp) => {
+        const expDate = new Date(exp.date);
+        if (expDate.getMonth() === currDate.getMonth()) {
+          totalUsedBudget += exp.cost;
+        }
+      });
+
+      setSummary({
+        totalBudget: totalBudget,
+        totalUsedBudget: totalUsedBudget,
       });
       setFinalCategoryData(updatedCategoryData);
     }
@@ -101,6 +121,7 @@ function Budget() {
       <Layout clickAddHandler={() => clickOpenCatModalHandler("add")}>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
         <Stack gap={2}>
+          <Summary max={summary.totalBudget} curr={summary.totalUsedBudget} />
           {catData && !catError && finalCategoryData && (
             <Grid container spacing={2}>
               {finalCategoryData.map((cat, i) => (
