@@ -124,19 +124,25 @@ function Budget() {
           <Summary max={summary.totalBudget} curr={summary.totalUsedBudget} />
           {catData && !catError && finalCategoryData && (
             <Grid container spacing={2}>
-              {finalCategoryData.map((cat, i) => (
-                <Grid item key={i} xs={12} sm={6} md={4}>
-                  <Category
-                    title={cat.name}
-                    max={cat.maxBudget}
-                    curr={cat.currentlyUsedBudget}
-                    editClickHandler={() => {
-                      setSelectedCategoryData(cat);
-                      clickOpenCatModalHandler("edit");
-                    }}
-                  />
-                </Grid>
-              ))}
+              {finalCategoryData
+                .sort(
+                  (obj1, obj2) =>
+                    obj2.currentlyUsedBudget / obj2.maxBudget -
+                    obj1.currentlyUsedBudget / obj1.maxBudget
+                )
+                .map((cat, i) => (
+                  <Grid item key={i} xs={12} sm={6} md={4}>
+                    <Category
+                      title={cat.name}
+                      max={cat.maxBudget}
+                      curr={cat.currentlyUsedBudget}
+                      editClickHandler={() => {
+                        setSelectedCategoryData(cat);
+                        clickOpenCatModalHandler("edit");
+                      }}
+                    />
+                  </Grid>
+                ))}
             </Grid>
           )}
         </Stack>
