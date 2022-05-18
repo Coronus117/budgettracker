@@ -39,7 +39,7 @@ function Navigation({ clickAddHandler }) {
   return (
     <Box display="flex" justifyContent="space-between" paddingY={2}>
       <Grid container>
-        <Grid item xs={6} sm={4}>
+        <Grid item xs={6} sm={4} display="flex" justifyContent="start">
           <Stack spacing={2} direction="row" display="flex" alignItems="center">
             {buttons.map((b) => {
               return (

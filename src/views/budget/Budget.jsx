@@ -10,6 +10,11 @@ import Summary from "./summary/Summary";
 import Grid from "@mui/material/Grid";
 import { Stack } from "@mui/material";
 
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 import { useSelector } from "react-redux";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -29,6 +34,9 @@ function Budget() {
     totalBudget: 0,
     totalUsedBudget: 0,
   });
+
+  const sortOptions = ["% Used", "$ Used", "$ Budget"];
+  const [sortOption, setSortOption] = useState(sortOptions[0]);
 
   const {
     data: catData,
@@ -107,7 +115,10 @@ function Budget() {
         id: key,
         ...expenseData[key],
       };
-      transformedExpenseData.push(expenseObj);
+      const expDate = new Date(expenseObj.date);
+      if (expDate.getMonth() === currDate.getMonth()) {
+        transformedExpenseData.push(expenseObj);
+      }
     }
     setFormattedExpenseData(transformedExpenseData);
   }, [expenseData]);
@@ -121,15 +132,47 @@ function Budget() {
       <Layout clickAddHandler={() => clickOpenCatModalHandler("add")}>
         {catIsValidating && <div>LOADING LOADING LOADING</div>}
         <Stack gap={2}>
+          <div className="sortSelect">
+            <FormControl sx={{ minWidth: 120 }} size="small">
+              <InputLabel id="demo-select-small">Sort</InputLabel>
+              <Select
+                autoWidth
+                labelId="demo-select-small"
+                id="demo-select-small"
+                value={sortOption}
+                label="Age"
+                onChange={(e) => setSortOption(e.target.value)}
+              >
+                {sortOptions.map((option) => {
+                  return (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </div>
           <Summary max={summary.totalBudget} curr={summary.totalUsedBudget} />
           {catData && !catError && finalCategoryData && (
             <Grid container spacing={2}>
               {finalCategoryData
-                .sort(
-                  (obj1, obj2) =>
-                    obj2.currentlyUsedBudget / obj2.maxBudget -
-                    obj1.currentlyUsedBudget / obj1.maxBudget
-                )
+                .sort((obj1, obj2) => {
+                  switch (sortOption) {
+                    case "% Used":
+                      return (
+                        obj2.currentlyUsedBudget / obj2.maxBudget -
+                        obj1.currentlyUsedBudget / obj1.maxBudget
+                      );
+                    case "$ Used":
+                      return (
+                        obj2.currentlyUsedBudget - obj1.currentlyUsedBudget
+                      );
+                    // case "$ Budget":
+                    default:
+                      return obj2.maxBudget - obj1.maxBudget;
+                  }
+                })
                 .map((cat, i) => (
                   <Grid item key={i} xs={12} sm={6} md={4}>
                     <Category
@@ -140,6 +183,14 @@ function Budget() {
                         setSelectedCategoryData(cat);
                         clickOpenCatModalHandler("edit");
                       }}
+                      expenses={formattedExpenseData
+                        .filter((e) => {
+                          return e.category === cat.name;
+                        })
+                        .sort(
+                          (obj1, obj2) =>
+                            new Date(obj2.date) - new Date(obj1.date)
+                        )}
                     />
                   </Grid>
                 ))}

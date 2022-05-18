@@ -11,13 +11,18 @@ import Grid from "@mui/material/Grid";
 
 import PaidIcon from "@mui/icons-material/Paid";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 const StyledRating = styled(Rating)({
   "& .MuiRating-iconFilled": {
     color: "#00DB00",
   },
 });
 
-function Category({ title, max, curr, editClickHandler }) {
+function Category({ title, max, curr, editClickHandler, expenses }) {
   return (
     <Paper elevation={3}>
       <Box padding={1}>
@@ -32,20 +37,45 @@ function Category({ title, max, curr, editClickHandler }) {
               <EditIcon />
             </IconButton>
           </Grid>
-          <Grid item>
-            <StyledRating
-              name="simple-controlled"
-              value={(1 - curr / max) * 5}
-              readOnly
-              precision={0.5}
-              icon={<PaidIcon fontSize="inherit" />}
-              emptyIcon={<PaidIcon fontSize="inherit" />}
-            />
-          </Grid>
-          <Grid item paddingLeft={1}>
-            <Typography>{`$${curr} / $${max}`}</Typography>
-          </Grid>
         </Grid>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Grid container>
+              <Grid item display={"flex"} alignItems={"center"}>
+                <StyledRating
+                  name="simple-controlled"
+                  value={(1 - curr / max) * 5}
+                  readOnly
+                  precision={0.5}
+                  icon={<PaidIcon fontSize="inherit" />}
+                  emptyIcon={<PaidIcon fontSize="inherit" />}
+                />
+              </Grid>
+              <Grid item paddingLeft={1}>
+                <Typography>{`$${curr} / $${max}`}</Typography>
+              </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            {expenses.map((e) => (
+              <Grid container>
+                <Grid item xs={8}>
+                  {e.title}
+                </Grid>
+                <Grid item xs={2} textAlign="right" paddingRight={2}>
+                  {e.cost}
+                </Grid>
+                <Grid item xs={2} textAlign={"center"}>
+                  {e.date.slice(0, -5)}
+                </Grid>
+              </Grid>
+            ))}
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Paper>
   );
