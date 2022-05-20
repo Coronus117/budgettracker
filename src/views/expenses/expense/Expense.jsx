@@ -6,9 +6,11 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import amazonPNG from "public/amazon.png";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 
 function Expense({ expenseData, editClickHandler }) {
-  const { title, cost, category, date } = expenseData;
+  const { title, cost, category, date, amazon, cash } = expenseData;
   return (
     <Paper elevation={3}>
       <Box padding={1}>
@@ -48,7 +50,20 @@ function Expense({ expenseData, editClickHandler }) {
               <Grid item xs={4} display="flex" alignItems="center">
                 {date}
               </Grid>
-              <Grid item xs={4} display="flex" justifyContent="end">
+              <Grid item xs={2} display="flex" alignItems="center">
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  display="flex"
+                  alignItems="center"
+                >
+                  {amazon && (
+                    <img src={amazonPNG} className="amazonLogo-expense" />
+                  )}
+                  {cash && <LocalAtmIcon />}
+                </Stack>
+              </Grid>
+              <Grid item xs={2} display="flex" justifyContent="end">
                 <IconButton aria-label="delete" onClick={editClickHandler}>
                   <EditIcon />
                 </IconButton>

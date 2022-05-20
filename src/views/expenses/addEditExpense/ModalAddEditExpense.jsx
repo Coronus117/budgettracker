@@ -15,8 +15,12 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { DatePicker } from "@mui/x-date-pickers";
 import Alert from "@mui/material/Alert";
 
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+
 import { httpClient } from "helpers";
-import { Stack } from "@mui/material";
+import Stack from "@mui/material/Stack";
 
 const expenseSchema = Yup.object().shape({
   title: Yup.string()
@@ -38,6 +42,8 @@ const initialValues = Object.freeze({
   cost: 0,
   category: "",
   date: new Date(),
+  amazon: false,
+  cash: false,
 });
 
 function ModalAddEditExpense({
@@ -151,6 +157,8 @@ function ModalAddEditExpense({
       initVals.cost = editExpenseData.cost;
       initVals.category = editExpenseData.category;
       initVals.date = editExpenseData.date;
+      initVals.amazon = editExpenseData.amazon;
+      initVals.cash = editExpenseData.cash;
     }
 
     return initVals;
@@ -213,7 +221,7 @@ function ModalAddEditExpense({
                 alignItems="center"
                 justify="center"
                 direction="column"
-                gap={4}
+                gap={3}
                 padding={4}
               >
                 <Grid item>
@@ -241,6 +249,32 @@ function ModalAddEditExpense({
                     error={touched.cost && Boolean(errors.cost)}
                     helperText={touched.cost && errors.cost}
                   />
+                </Grid>
+                <Grid item>
+                  <Stack direction="row" spacing={2}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox />}
+                        label="Amazon"
+                        name="amazon"
+                        onChange={(e) =>
+                          setFieldValue("amazon", e.target.checked)
+                        }
+                        checked={values.amazon}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox />}
+                        label="Cash"
+                        name="cash"
+                        onChange={(e) =>
+                          setFieldValue("cash", e.target.checked)
+                        }
+                        checked={values.cash}
+                      />
+                    </FormGroup>
+                  </Stack>
                 </Grid>
                 <Grid item>
                   <Box sx={{ minWidth: 120 }}>

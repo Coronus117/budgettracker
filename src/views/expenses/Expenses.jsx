@@ -13,6 +13,8 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 import { useSelector } from "react-redux";
 
+import DayDivider from "./dayDivider/DayDivider";
+
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function Expenses() {
@@ -66,6 +68,27 @@ function Expenses() {
     setExpenseModalOpen({ open: true, type: type });
   };
 
+  let dayDivider_date = new Date("1900/1/1").toDateString();
+  let dayDivider_totalCost = 0;
+  let dayDivider_render = false;
+  const calcDayDivider = (date, cost, date2) => {
+    const currDate = new Date(date).toDateString();
+    const nextDate = new Date(date2).toDateString();
+
+    if (currDate !== dayDivider_date) {
+      dayDivider_totalCost = cost;
+      dayDivider_date = currDate;
+    } else {
+      dayDivider_totalCost += cost;
+    }
+
+    if (currDate !== nextDate) {
+      dayDivider_render = true;
+    } else {
+      dayDivider_render = false;
+    }
+  };
+
   return (
     <div>
       <Layout clickAddHandler={() => clickOpenExpenseModalHandler("add")}>
@@ -81,15 +104,25 @@ function Expenses() {
                   return new Date(data.date).getMonth() === currDate.getMonth();
                 })
                 .sort((obj1, obj2) => new Date(obj2.date) - new Date(obj1.date))
-                .map((expense, i) => (
-                  <Expense
-                    key={i}
-                    expenseData={expense}
-                    editClickHandler={() => {
-                      setSelectedExpenseData(expense);
-                      clickOpenExpenseModalHandler("edit");
-                    }}
-                  />
+                .map((expense, i, elements) => (
+                  <>
+                    <Expense
+                      key={i}
+                      expenseData={expense}
+                      editClickHandler={() => {
+                        setSelectedExpenseData(expense);
+                        clickOpenExpenseModalHandler("edit");
+                      }}
+                    />
+                    {calcDayDivider(
+                      expense.date,
+                      expense.cost,
+                      elements[i + 1]?.date
+                    )}
+                    {dayDivider_render && (
+                      <DayDivider cost={dayDivider_totalCost} />
+                    )}
+                  </>
                 ))}
           </Stack>
         </Box>

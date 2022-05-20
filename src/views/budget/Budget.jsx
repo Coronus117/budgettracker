@@ -35,7 +35,7 @@ function Budget() {
     totalUsedBudget: 0,
   });
 
-  const sortOptions = ["% Used", "$ Used", "$ Budget"];
+  const sortOptions = ["% Used", "$ Used", "$ Budget", "ABC"];
   const [sortOption, setSortOption] = useState(sortOptions[0]);
 
   const {
@@ -168,6 +168,8 @@ function Budget() {
                       return (
                         obj2.currentlyUsedBudget - obj1.currentlyUsedBudget
                       );
+                    case "ABC":
+                      return obj1.name.localeCompare(obj2.name);
                     // case "$ Budget":
                     default:
                       return obj2.maxBudget - obj1.maxBudget;
