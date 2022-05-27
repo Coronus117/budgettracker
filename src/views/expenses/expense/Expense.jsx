@@ -9,6 +9,8 @@ import Grid from "@mui/material/Grid";
 import amazonPNG from "public/amazon.png";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 
+const week = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
+
 function Expense({ expenseData, editClickHandler }) {
   const { title, cost, category, date, amazon, cash } = expenseData;
   return (
@@ -48,7 +50,7 @@ function Expense({ expenseData, editClickHandler }) {
                 {category}
               </Grid>
               <Grid item xs={4} display="flex" alignItems="center">
-                {date}
+                {`${date.slice(0, -5)} - ${week[new Date(date).getDay()]}`}
               </Grid>
               <Grid item xs={2} display="flex" alignItems="center">
                 <Stack

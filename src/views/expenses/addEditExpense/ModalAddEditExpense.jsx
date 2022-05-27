@@ -103,6 +103,9 @@ function ModalAddEditExpense({
   const handleSubmitRequest = async (values) => {
     setState({ ...state, isLoading: true });
 
+    values.title = values.title.trimEnd();
+    values.category = values.category.trimEnd();
+
     try {
       let res;
       if (type === "add") {

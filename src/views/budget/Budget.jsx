@@ -43,7 +43,10 @@ function Budget() {
     error: catError,
     isValidating: catIsValidating,
     mutate: catMutate,
-  } = useSWR(`${httpBasePath}/categories.json`, fetcher);
+  } = useSWR(
+    `${httpBasePath}/categories/${currDate.getFullYear()}/${currDate.getMonth()}.json`,
+    fetcher
+  );
 
   useEffect(() => {
     const transformedCatData = [];

@@ -12,6 +12,8 @@ import Alert from "@mui/material/Alert";
 
 import { httpClient } from "helpers";
 
+import { useSelector } from "react-redux";
+
 const categorySchema = Yup.object().shape({
   name: Yup.string()
     .max(250, "Sorry that name is too long")
@@ -47,11 +49,15 @@ function ModalAddEditCategory({
     isError: false,
   });
 
+  const currDate = useSelector((state) => state.currDate);
+
   const clickDeleteHandler = async () => {
     setState({ ...state, isLoading: true });
 
     const { status } = await httpClient.delete(
-      `/categories/${editCatData.id}.json`
+      `/categories/${currDate.getFullYear()}/${currDate.getMonth()}/${
+        editCatData.id
+      }.json`
     );
 
     try {
@@ -82,13 +88,20 @@ function ModalAddEditCategory({
   const handleSubmitRequest = async (values) => {
     setState({ ...state, isLoading: true });
 
+    values.name = values.name.trimEnd();
+
     try {
       let res;
       if (type === "add") {
-        res = await httpClient.post("/categories.json", values);
+        res = await httpClient.post(
+          `/categories/${currDate.getFullYear()}/${currDate.getMonth()}.json`,
+          values
+        );
       } else {
         res = await httpClient.put(
-          `/categories/${editCatData.id}.json`,
+          `/categories/${currDate.getFullYear()}/${currDate.getMonth()}/${
+            editCatData.id
+          }.json`,
           values
         );
       }

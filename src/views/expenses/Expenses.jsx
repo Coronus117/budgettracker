@@ -17,6 +17,8 @@ import DayDivider from "./dayDivider/DayDivider";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const week = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
+
 function Expenses() {
   const currDate = useSelector((state) => state.currDate);
   const [expenseModalOpen, setExpenseModalOpen] = useState({
@@ -32,7 +34,10 @@ function Expenses() {
     // error: catError,
     // isValidating: catIsValidating,
     // mutate: catMutate,
-  } = useSWR(`${httpBasePath}/categories.json`, fetcher);
+  } = useSWR(
+    `${httpBasePath}/categories/${currDate.getFullYear()}/${currDate.getMonth()}.json`,
+    fetcher
+  );
 
   useEffect(() => {
     const transformedCatData = [];
@@ -120,7 +125,12 @@ function Expenses() {
                       elements[i + 1]?.date
                     )}
                     {dayDivider_render && (
-                      <DayDivider cost={dayDivider_totalCost} />
+                      <DayDivider
+                        cost={dayDivider_totalCost}
+                        dateString={`${expense.date.slice(0, -5)} - ${
+                          week[new Date(expense.date).getDay()]
+                        }`}
+                      />
                     )}
                   </>
                 ))}
